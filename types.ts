@@ -1,9 +1,11 @@
-interface User {
+export interface User {
   id: number;
   username: string;
   password: string;
 }
 
-type NewUser = Omit<User, "id">;
+export interface Payload {
+  sub: number;
+}
 
-export { User, NewUser };
+export type NewUser = Omit<User, "id">;

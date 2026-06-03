@@ -1,19 +1,10 @@
 import express from "express";
-import type { Request, Response } from "express";
-import type { NewUser, User } from "../types.ts";
-import authModel from "../models/auth.ts";
+import routerController from "../controllers/auth.ts";
 
 const router = express.Router();
 
-router.post(
-  "/register",
-  async (req: Request<unknown, unknown, NewUser>, res: Response<User>) => {
-    const { username, password } = req.body;
+router.post("/sign-up", routerController.signUpPost);
 
-    const newUser = await authModel.createUser({ username, password });
-
-    res.json(newUser);
-  },
-);
+router.post("/login", routerController.loginPost);
 
 export default router;
