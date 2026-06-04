@@ -13,12 +13,18 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  password String
+  id               Int       @id @default(autoincrement())
+  username         String    @unique
+  password         String
+  sentMessages     Message[] @relation("Sender")
+  receivedMessages Message[] @relation("Receiver")
 }
 
 model Message {
-  id      Int    @id @default(autoincrement())
-  content String
+  id         Int    @id @default(autoincrement())
+  content    String
+  sender     User?   @relation("Sender", fields: [senderId], references: [id])
+  senderId   Int?
+  receiver   User?   @relation("Receiver", fields: [receiverId], references: [id])
+  receiverId Int?
 }

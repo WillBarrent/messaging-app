@@ -12,4 +12,32 @@ const createUser = async ({ username, password }: NewUser): Promise<User> => {
   return user;
 };
 
-export default { createUser };
+const getUserById = async ({ id }: { id: number }): Promise<User | null> => {
+  const user: User | null = await prisma.user.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!user) {
+    return null;
+  }
+
+  return user;
+};
+
+const getUserByUsername = async ({ username }: { username: string }) => {
+  const user: User | null = await prisma.user.findFirst({
+    where: {
+      username,
+    },
+  });
+
+  if (!user) {
+    return null;
+  }
+
+  return user;
+};
+
+export default { createUser, getUserById, getUserByUsername };

@@ -2,11 +2,10 @@ import type { Request, Response } from "express";
 import type { NewUser, User } from "../types.ts";
 import { createJWT, hashPassword, validatePassword } from "../utils.ts";
 import authModel from "../models/auth.ts";
-import prisma from "../db/prisma.ts";
 
 const signUpPost = async (
   req: Request<unknown, unknown, NewUser>,
-  res: Response<User>,
+  res: Response,
 ) => {
   const { username, password } = req.body;
 
@@ -21,14 +20,10 @@ const signUpPost = async (
 
 const loginPost = async (
   req: Request<unknown, unknown, NewUser>,
-  res: Response<{ token: string }>,
+  res: Response,
 ) => {
   const { username, password } = req.body;
-  const user: User | null = await prisma.user.findFirst({
-    where: {
-      username,
-    },
-  });
+  const user: User | null = await authModel.getUserByUsername({ username });
 
   if (user) {
     const isPasswordValid = await validatePassword(password, user.password);
@@ -38,6 +33,10 @@ const loginPost = async (
         token,
       });
     }
+  } else {
+    res.status(401).json({
+      error: "user with given credentials doesn't exist",
+    });
   }
 };
 

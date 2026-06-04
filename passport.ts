@@ -2,6 +2,8 @@ import {
   Strategy,
   ExtractJwt,
   type StrategyOptionsWithoutRequest,
+  type VerifiedCallback,
+  type VerifyCallback,
 } from "passport-jwt";
 import prisma from "./db/prisma.ts";
 import type { Payload } from "./types.ts";
@@ -13,7 +15,10 @@ const options: StrategyOptionsWithoutRequest = {
   secretOrKey: key as string,
 };
 
-const JwtStrategy = new Strategy(options, (jwt_payload: Payload, done) => {
+const verifyCallback: VerifyCallback = (
+  jwt_payload: Payload,
+  done: VerifiedCallback,
+) => {
   prisma.user
     .findFirst({
       where: {
@@ -30,6 +35,8 @@ const JwtStrategy = new Strategy(options, (jwt_payload: Payload, done) => {
     .catch((error) => {
       return done(error, false);
     });
-});
+};
+
+const JwtStrategy = new Strategy(options, verifyCallback);
 
 export default JwtStrategy;
