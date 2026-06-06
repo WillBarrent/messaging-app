@@ -18,15 +18,20 @@ export const validatePassword = async (
   return isCorrect;
 };
 
-export const createJWT = (user: User): { token: string } => {
+export const createJWT = (user: User): { token: string; userId: number, username: string } => {
   const _id = user.id;
   const payload: Payload = {
     sub: _id,
   };
 
-  const signedToken = jsonwebtoken.sign(payload, process.env.SECRET_JWT_KEY as string);
+  const signedToken = jsonwebtoken.sign(
+    payload,
+    process.env.SECRET_JWT_KEY as string,
+  );
 
   return {
     token: "Bearer " + signedToken,
+    userId: _id,
+    username: user.username
   };
 };
