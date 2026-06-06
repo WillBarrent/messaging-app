@@ -28,9 +28,15 @@ const loginPost = async (
   if (user) {
     const isPasswordValid = await validatePassword(password, user.password);
     if (isPasswordValid) {
-      const { token } = createJWT(user);
+      const { token, userId, username } = createJWT(user);
       res.json({
         token,
+        userId,
+        username,
+      });
+    } else {
+      res.status(401).json({
+        error: "Password is not correct",
       });
     }
   } else {
