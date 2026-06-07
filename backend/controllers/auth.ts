@@ -1,21 +1,35 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import type { NewUser, User } from "../types.ts";
 import { createJWT, hashPassword, validatePassword } from "../utils.ts";
 import authModel from "../models/auth.ts";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 const signUpPost = async (
   req: Request<unknown, unknown, NewUser>,
   res: Response,
+  next: NextFunction,
 ) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  const hashedPassword = await hashPassword(password);
-  const newUser = await authModel.createUser({
-    username,
-    password: hashedPassword,
-  });
+    const hashedPassword = await hashPassword(password);
+    const newUser = await authModel.createUser({
+      username,
+      password: hashedPassword,
+    });
 
-  res.json(newUser);
+    res.json(newUser);
+  } catch (err) {
+    if (err instanceof PrismaClientKnownRequestError) {
+      if (err.code === "P2002") {
+        res.status(400).json({
+          error: "Username already has been taken. Try to use another username",
+        });
+      }
+    } else {
+      next(err);
+    }
+  }
 };
 
 const loginPost = async (
