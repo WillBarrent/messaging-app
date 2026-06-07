@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type { NewUser, User } from "../types.ts";
+import { type NewUser, type User } from "../types.ts";
 import { createJWT, hashPassword, validatePassword } from "../utils.ts";
 import authModel from "../models/auth.ts";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
