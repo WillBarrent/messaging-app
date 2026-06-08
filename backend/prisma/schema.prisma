@@ -18,6 +18,7 @@ model User {
   password         String
   sentMessages     Message[] @relation("Sender")
   receivedMessages Message[] @relation("Receiver")
+  chats            Chat[]
 }
 
 model Message {
@@ -28,4 +29,12 @@ model Message {
   receiver   User?    @relation("Receiver", fields: [receiverId], references: [id])
   receiverId Int?
   createdAt  DateTime @default(now())
+  chat       Chat?    @relation(fields: [chatId], references: [id])
+  chatId     Int?
+}
+
+model Chat {
+  id       Int       @id @default(autoincrement())
+  messages Message[]
+  users    User[]
 }
