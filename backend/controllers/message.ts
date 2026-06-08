@@ -16,7 +16,7 @@ const messagesGet = async (
   res.json(messages);
 };
 
-const messageUserPost = async (
+const messagePost = async (
   req: Request<unknown, unknown, NewMessage>,
   res: Response<Message>,
 ) => {
@@ -25,4 +25,13 @@ const messageUserPost = async (
   res.json(newMessage);
 };
 
-export default { messageUserPost, messagesGet };
+const messagePut = async () => {};
+
+const messageDelete = async () => {};
+
+export default {
+  messagePost,
+  messagesGet,
+  messagePut,
+  messageDelete,
+};
