@@ -51,6 +51,43 @@ const createMessage = async ({
     },
   });
 
+  const chat = await prisma.chat.findFirst({
+    where: {
+      users: {
+        every: {
+          OR: [{ id: receiverId as number }, { id: senderId as number }],
+        },
+      },
+    },
+  });
+
+  if (!chat) {
+    await prisma.chat.create({
+      data: {
+        messages: {
+          connect: { id: message.id },
+        },
+        users: {
+          connect: [{ id: senderId as number }, { id: receiverId as number }],
+        },
+      },
+    });
+  } else {
+    await prisma.chat.update({
+      where: {
+        id: chat.id,
+      },
+      data: {
+        messages: {
+          connect: { id: message.id },
+        },
+        users: {
+          connect: [{ id: senderId as number }, { id: receiverId as number }],
+        },
+      },
+    });
+  }
+
   return message;
 };
 
