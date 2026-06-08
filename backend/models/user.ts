@@ -7,4 +7,32 @@ const getAllUsers = async (): Promise<PlainUser[]> => {
   return users.map(({ id, username }) => ({ id, username }));
 };
 
-export default { getAllUsers };
+const getAllUsersChats = async ({ userId }: { userId: number }) => {
+  const chats = await prisma.chat.findMany({
+    where: {
+      users: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+    include: {
+      messages: true,
+      users: {
+        where: {
+          NOT: {
+            id: userId,
+          },
+        },
+        select: {
+          id: true,
+          username: true,
+        },
+      },
+    },
+  });
+
+  return chats;
+};
+
+export default { getAllUsers, getAllUsersChats };
