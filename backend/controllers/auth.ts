@@ -23,7 +23,7 @@ const signUpPost = async (
     if (err instanceof PrismaClientKnownRequestError) {
       if (err.code === "P2002") {
         res.status(400).json({
-          error: "Username already has been taken. Try to use another username",
+          error: "Username has already been taken.",
         });
       }
     } else {
@@ -55,7 +55,7 @@ const loginPost = async (
     }
   } else {
     res.status(401).json({
-      error: "user with given credentials doesn't exist",
+      error: "User with given credentials doesn't exist",
     });
   }
 };
