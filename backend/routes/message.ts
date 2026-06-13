@@ -25,6 +25,7 @@ router.post(
 
 router.put(
   "/:id",
+  validator.newMessageValidator,
   passport.authenticate("jwt", {
     session: false,
     failWithError: true,

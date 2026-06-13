@@ -46,8 +46,8 @@ const createMessage = async ({
   const message = await prisma.message.create({
     data: {
       content,
-      receiver: { connect: { id: receiverId as number } },
-      sender: { connect: { id: senderId as number } },
+      receiver: { connect: { id: receiverId } },
+      sender: { connect: { id: senderId } },
     },
   });
 
@@ -55,7 +55,7 @@ const createMessage = async ({
     where: {
       users: {
         every: {
-          OR: [{ id: receiverId as number }, { id: senderId as number }],
+          OR: [{ id: receiverId }, { id: senderId }],
         },
       },
     },
@@ -68,7 +68,7 @@ const createMessage = async ({
           connect: { id: message.id },
         },
         users: {
-          connect: [{ id: senderId as number }, { id: receiverId as number }],
+          connect: [{ id: senderId }, { id: receiverId }],
         },
       },
     });
@@ -82,7 +82,7 @@ const createMessage = async ({
           connect: { id: message.id },
         },
         users: {
-          connect: [{ id: senderId as number }, { id: receiverId as number }],
+          connect: [{ id: senderId }, { id: receiverId }],
         },
       },
     });
@@ -91,4 +91,23 @@ const createMessage = async ({
   return message;
 };
 
-export default { createMessage, getMessages };
+const updateMessage = async ({
+  id,
+  content,
+}: {
+  id: number;
+  content: string;
+}) => {
+  const updatedMessage = await prisma.message.update({
+    where: {
+      id: Number(id),
+    },
+    data: {
+      content,
+    },
+  });
+
+  return updatedMessage;
+};
+
+export default { createMessage, getMessages, updateMessage };

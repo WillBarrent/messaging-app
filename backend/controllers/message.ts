@@ -25,7 +25,20 @@ const messagePost = async (
   res.json(newMessage);
 };
 
-const messagePut = async () => {};
+const messagePut = async (
+  req: Request<{ id: string }, unknown, NewMessage>,
+  res: Response<Message>,
+) => {
+  const { id } = req.params;
+  const { content } = req.body;
+
+  const updatedMessage = await messageModel.updateMessage({
+    id: Number(id),
+    content,
+  });
+
+  res.json(updatedMessage);
+};
 
 const messageDelete = async () => {};
 
