@@ -110,4 +110,12 @@ const updateMessage = async ({
   return updatedMessage;
 };
 
-export default { createMessage, getMessages, updateMessage };
+const deleteMessage = async ({ id }: { id: number }) => {
+  await prisma.message.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export default { createMessage, getMessages, updateMessage, deleteMessage };

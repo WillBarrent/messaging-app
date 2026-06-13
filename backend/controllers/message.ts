@@ -40,7 +40,18 @@ const messagePut = async (
   res.json(updatedMessage);
 };
 
-const messageDelete = async () => {};
+const messageDelete = async (
+  req: Request<{ id: string }, unknown, unknown>,
+  res: Response,
+) => {
+  const { id } = req.params;
+
+  await messageModel.deleteMessage({ id: Number(id) });
+
+  res.json({
+    message: "Message has been removed",
+  });
+};
 
 export default {
   messagePost,
