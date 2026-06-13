@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { NewUserSchema } from "../types.ts";
+import { NewMessageSchema, NewUserSchema } from "../types.ts";
 
 const newUserValidator = (req: Request, _res: Response, next: NextFunction) => {
   try {
@@ -10,4 +10,17 @@ const newUserValidator = (req: Request, _res: Response, next: NextFunction) => {
   }
 };
 
-export default { newUserValidator };
+const newMessageValidator = (
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) => {
+  try {
+    NewMessageSchema.parse(req.body);
+    next();
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+export default { newUserValidator, newMessageValidator };

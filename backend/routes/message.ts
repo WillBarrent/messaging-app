@@ -1,6 +1,7 @@
 import express, { type RequestHandler } from "express";
 import messageController from "../controllers/message.ts";
 import passport from "passport";
+import validator from "../middlewares/validation.ts";
 const router = express.Router();
 
 router.get(
@@ -18,6 +19,7 @@ router.post(
     session: false,
     failWithError: true,
   }) as RequestHandler,
+  validator.newMessageValidator,
   messageController.messagePost,
 );
 

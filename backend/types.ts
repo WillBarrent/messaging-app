@@ -39,4 +39,10 @@ export interface Message {
   receiverId: number | null;
 }
 
-export type NewMessage = Omit<Message, "id">;
+export const NewMessageSchema = z.object({
+  content: z.string().min(1, "Message cannot be empty"),
+  senderId: z.number(),
+  receiverId: z.number(),
+});
+
+export type NewMessage = z.infer<typeof NewMessageSchema>;
