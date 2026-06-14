@@ -1,5 +1,67 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import styled from "styled-components";
+
+const Wrapper = styled.div`
+  height: 100vh;
+`;
+
+const Layout = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Title = styled.h1`
+  margin-bottom: 10px;
+`;
+
+const SignUpForm = styled.form`
+  border: 1px solid black;
+  width: 500px;
+  padding: 40px 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
+const Label = styled.label`
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  font-size: 20px;
+`;
+
+const Input = styled.input`
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  border: 1px solid black;
+  padding: 5px 10px;
+`;
+
+const Button = styled.button`
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+  border: 1px solid black;
+  padding: 5px 10px;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #282828;
+  }
+`;
+
+const Paragraph = styled.p`
+  text-align: center;
+`;
 
 const SignUp = () => {
   const [username, setUsername] = useState<string>("");
@@ -25,13 +87,13 @@ const SignUp = () => {
   };
 
   return (
-    <div>
-      <h1>SignUp Page</h1>
-      <form onSubmit={onSubmit}>
-        <div>
-          <label>
-            username
-            <input
+    <Wrapper>
+      <Layout>
+        <Title>Create Account</Title>
+        <SignUpForm onSubmit={onSubmit}>
+          <Label>
+            Username
+            <Input
               type="text"
               placeholder="Username"
               value={username}
@@ -39,12 +101,10 @@ const SignUp = () => {
                 setUsername(e.target.value);
               }}
             />
-          </label>
-        </div>
-        <div>
-          <label>
-            password
-            <input
+          </Label>
+          <Label>
+            Password
+            <Input
               type="password"
               placeholder="Password"
               value={password}
@@ -52,11 +112,14 @@ const SignUp = () => {
                 setPassword(e.target.value);
               }}
             />
-          </label>
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
-    </div>
+          </Label>
+          <Button type="submit">Sign Up</Button>
+          <Paragraph>
+            Have an account? <Link to={"/login"}>Login</Link>
+          </Paragraph>
+        </SignUpForm>
+      </Layout>
+    </Wrapper>
   );
 };
 

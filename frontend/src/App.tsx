@@ -1,4 +1,4 @@
-import { Link, Route, Routes, useMatch } from "react-router";
+import { Route, Routes, useMatch } from "react-router";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
 import React, { useContext, useEffect, useState } from "react";
@@ -59,31 +59,15 @@ const App = () => {
   };
 
   return (
-    <div>
-      <div>
-        {user ? (
-          <div>
-            <Link to={"/"}>Chats</Link>
-            <button onClick={onLogout}>logout</button>
-          </div>
-        ) : null}
-        {!user ? (
-          <>
-            <Link to={"/login"}>Login</Link>
-            <Link to={"/sign-up"}>SignUp</Link>
-          </>
-        ) : null}
-      </div>
-      <Routes>
-        <Route index path="/" element={<ChatList users={users} />} />
-        <Route
-          path="chats/:id"
-          element={<ChatDisplay chat={chat} onMessageSend={onMessageSend} />}
-        />
-        <Route path="login" element={<Login />} />
-        <Route path="sign-up" element={<SignUp />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route index path="/" element={<ChatList users={users} />} />
+      <Route
+        path="chats/:id"
+        element={<ChatDisplay chat={chat} onMessageSend={onMessageSend} />}
+      />
+      <Route path="login" element={<Login />} />
+      <Route path="sign-up" element={<SignUp />} />
+    </Routes>
   );
 };
 

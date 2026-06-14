@@ -1,5 +1,69 @@
 import React, { useContext, useState } from "react";
-import UserContext, { type UserContextType } from "../UserContext";
+import styled from "styled-components";
+import UserContext from "../UserContext";
+import type { UserContextType } from "../types";
+import { Link } from "react-router";
+
+const Wrapper = styled.div`
+  height: 100vh;
+`;
+
+const Layout = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Title = styled.h1`
+  margin-bottom: 10px;
+`;
+
+const LoginForm = styled.form`
+  border: 1px solid black;
+  width: 500px;
+  padding: 40px 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
+const Label = styled.label`
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  font-size: 20px;
+`;
+
+const Input = styled.input`
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  border: 1px solid black;
+  padding: 5px 10px;
+`;
+
+const Button = styled.button`
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+  border: 1px solid black;
+  padding: 5px 10px;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #282828;
+  }
+`;
+
+const Paragraph = styled.p`
+  text-align: center;
+`;
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -33,13 +97,13 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h1>Login Page</h1>
-      <form onSubmit={onSubmit}>
-        <div>
-          <label>
-            username
-            <input
+    <Wrapper>
+      <Layout>
+        <Title>Login</Title>
+        <LoginForm onSubmit={onSubmit}>
+          <Label>
+            Username
+            <Input
               type="text"
               placeholder="Username"
               value={username}
@@ -47,12 +111,10 @@ const Login = () => {
                 setUsername(e.target.value);
               }}
             />
-          </label>
-        </div>
-        <div>
-          <label>
-            password
-            <input
+          </Label>
+          <Label>
+            Password
+            <Input
               type="password"
               placeholder="Password"
               value={password}
@@ -60,11 +122,14 @@ const Login = () => {
                 setPassword(e.target.value);
               }}
             />
-          </label>
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </div>
+          </Label>
+          <Button type="submit">Login</Button>
+          <Paragraph>
+            Don't have account? <Link to={"/sign-up"}>Create account</Link>
+          </Paragraph>
+        </LoginForm>
+      </Layout>
+    </Wrapper>
   );
 };
 
