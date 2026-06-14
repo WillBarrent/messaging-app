@@ -1,17 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-
-export interface UserContext {
-  token: string | undefined;
-  userId: number | undefined;
-  username: string | undefined;
-}
-
-export interface UserContextType {
-  user: UserContext | null;
-  setLocalStorage: ({ token, userId, username }: UserContext) => void;
-  clearLocalStorage: () => void;
-}
+import type { IUserContext, UserContextType } from "./types";
 
 const UserContext = createContext<UserContextType | null>(null);
 
@@ -20,7 +9,7 @@ export default UserContext;
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<UserContext | null>(null);
+  const [user, setUser] = useState<IUserContext | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,7 +30,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [location.pathname, user, navigate]);
 
-  const setLocalStorage = ({ token, userId, username }: UserContext) => {
+  const setLocalStorage = ({ token, userId, username }: IUserContext) => {
     const data = { token, userId, username };
     if (token !== undefined && userId !== undefined) {
       localStorage.setItem("user", JSON.stringify(data));

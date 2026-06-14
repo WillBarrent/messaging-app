@@ -1,0 +1,29 @@
+export interface Message {
+  id: number;
+  content: string;
+  senderId: number | null;
+  receiverId: number | null;
+}
+
+export interface User {
+  id: number;
+  username: string;
+}
+
+export interface Chat {
+  id: number;
+  messages: Message[];
+  users: User[];
+}
+
+export interface IUserContext {
+  token: string | undefined;
+  userId: number | undefined;
+  username: string | undefined;
+}
+
+export interface UserContextType {
+  user: IUserContext | null;
+  setLocalStorage: ({ token, userId, username }: IUserContext) => void;
+  clearLocalStorage: () => void;
+}

@@ -2,27 +2,10 @@ import { Link, Route, Routes, useMatch } from "react-router";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
 import React, { useContext, useEffect, useState } from "react";
-import UserContext, { type UserContextType } from "./UserContext";
+import UserContext from "./UserContext";
 import ChatList from "./Pages/ChatList";
 import ChatDisplay from "./Pages/Chat";
-
-export interface Message {
-  id: number;
-  content: string;
-  senderId: number | null;
-  receiverId: number | null;
-}
-
-export interface User {
-  id: number;
-  username: string;
-}
-
-export interface Chat {
-  id: number;
-  messages: Message[];
-  users: User[];
-}
+import type { Chat, User, UserContextType } from "./types";
 
 const App = () => {
   const { user, setLocalStorage, clearLocalStorage } = useContext(
