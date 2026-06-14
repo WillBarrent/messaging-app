@@ -1,16 +1,8 @@
-import {
-  Link,
-  Route,
-  Routes,
-  useLocation,
-  useMatch,
-  useNavigate,
-} from "react-router";
+import { Link, Route, Routes, useMatch } from "react-router";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
 import React, { useContext, useEffect, useState } from "react";
 import UserContext, { type UserContextType } from "./UserContext";
-import Messages from "./Components/Messages";
 import ChatList from "./Pages/ChatList";
 import ChatDisplay from "./Pages/Chat";
 
@@ -36,8 +28,6 @@ const App = () => {
   const { user, setLocalStorage, clearLocalStorage } = useContext(
     UserContext,
   ) as UserContextType;
-  const location = useLocation();
-  const navigate = useNavigate();
   const [chats, setChats] = useState<Chat[]>([]);
   const users: User[] = chats.map((chat) => {
     return chat.users[0];
@@ -45,23 +35,6 @@ const App = () => {
   const params = useMatch("/chats/:id");
 
   const chat = chats.find((c) => c.users[0].id === Number(params?.params.id));
-
-  useEffect(() => {
-    if (location.pathname === "/login" && !user) {
-      navigate("/login");
-    } else if (location.pathname === "/sign-up" && !user) {
-      navigate("/sign-up");
-    } else if (!user) {
-      navigate("/login");
-    } else if (
-      (location.pathname === "/login" || location.pathname === "/sign-up") &&
-      user
-    ) {
-      navigate("/");
-    } else {
-      navigate(location.pathname);
-    }
-  }, [location.pathname, navigate, user]);
 
   useEffect(() => {
     const userInStorage = localStorage.getItem("user");
@@ -121,11 +94,9 @@ const App = () => {
       <Routes>
         <Route index path="/" element={<ChatList users={users} />} />
         <Route
-          index
           path="chats/:id"
           element={<ChatDisplay chat={chat} onMessageSend={onMessageSend} />}
         />
-        <Route path="messages/:username/:id" element={<Messages />} />
         <Route path="login" element={<Login />} />
         <Route path="sign-up" element={<SignUp />} />
       </Routes>

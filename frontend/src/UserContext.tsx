@@ -1,4 +1,5 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 export interface UserContext {
   token: string | undefined;
@@ -20,6 +21,25 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<UserContext | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/login" && !user) {
+      navigate("/login");
+    } else if (location.pathname === "/sign-up" && !user) {
+      navigate("/sign-up");
+    } else if (!user) {
+      navigate("/login");
+    } else if (
+      (location.pathname === "/login" || location.pathname === "/sign-up") &&
+      user
+    ) {
+      navigate("/");
+    } else {
+      navigate(location.pathname);
+    }
+  }, [location.pathname, user, navigate]);
 
   const setLocalStorage = ({ token, userId, username }: UserContext) => {
     const data = { token, userId, username };
