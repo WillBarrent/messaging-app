@@ -1,6 +1,15 @@
 import React, { useContext, useState } from "react";
-import type { Chat } from "../App";
-import UserContext, { type UserContextType } from "../UserContext";
+import UserContext from "../UserContext";
+import type { Chat, UserContextType } from "../types";
+import styled from "styled-components";
+
+const Chat = styled.div`
+  flex: 1;
+  border: 5px solid black;
+  margin: 20px;
+  padding: 20px 40px;
+  overflow-y: auto;
+`;
 
 const ChatDisplay = ({
   chat,
@@ -43,7 +52,7 @@ const ChatDisplay = ({
   };
 
   return (
-    <div>
+    <Chat>
       <h1>Chat with {chatter}</h1>
       <form onSubmit={onSubmit} style={{ marginBottom: "10px" }}>
         <input
@@ -81,7 +90,7 @@ const ChatDisplay = ({
           );
         })}
       </div>
-    </div>
+    </Chat>
   );
 };
 

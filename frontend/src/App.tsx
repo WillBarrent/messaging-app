@@ -18,6 +18,9 @@ const App = () => {
   const params = useMatch("/chats/:id");
 
   const chat = chats.find((c) => c.users[0].id === Number(params?.params.id));
+  const lastMessages = chats.map((chat) => {
+    return chat.messages.at(-1);
+  });
 
   useEffect(() => {
     const userInStorage = localStorage.getItem("user");
@@ -60,11 +63,12 @@ const App = () => {
 
   return (
     <Routes>
-      <Route index path="/" element={<ChatList users={users} />} />
-      <Route
-        path="chats/:id"
-        element={<ChatDisplay chat={chat} onMessageSend={onMessageSend} />}
-      />
+      <Route path="/chats" element={<ChatList users={users} lastMessages={lastMessages}/>}>
+        <Route
+          path=":id"
+          element={<ChatDisplay chat={chat} onMessageSend={onMessageSend} />}
+        />
+      </Route>
       <Route path="login" element={<Login />} />
       <Route path="sign-up" element={<SignUp />} />
     </Routes>

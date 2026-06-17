@@ -48,7 +48,7 @@ const Input = styled.input`
 const Button = styled.button`
   font-family: inherit;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: bold;
   outline: none;
   border: 1px solid black;
   padding: 5px 10px;
@@ -57,7 +57,9 @@ const Button = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #282828;
+    background-color: #fff;
+    color: #000;
+    border: 3px solid black;
   }
 `;
 
