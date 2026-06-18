@@ -1,16 +1,14 @@
 import { Route, Routes, useMatch } from "react-router";
 import Login from "./Pages/Login";
 import SignUp from "./Pages/SignUp";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserContext from "./UserContext";
 import ChatList from "./Pages/ChatList";
 import ChatDisplay from "./Pages/Chat";
 import type { Chat, User, UserContextType } from "./types";
 
 const App = () => {
-  const { user, setLocalStorage, clearLocalStorage } = useContext(
-    UserContext,
-  ) as UserContextType;
+  const { user, setLocalStorage } = useContext(UserContext) as UserContextType;
   const [chats, setChats] = useState<Chat[]>([]);
   const users: User[] = chats.map((chat) => {
     return chat.users[0];
@@ -19,7 +17,7 @@ const App = () => {
 
   const chat = chats.find((c) => c.users[0].id === Number(params?.params.id));
   const lastMessages = chats.map((chat) => {
-    return chat.messages.at(-1);
+    return chat.messages.at(0);
   });
 
   useEffect(() => {
@@ -43,12 +41,6 @@ const App = () => {
     }
   }, [user]);
 
-  const onLogout = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-
-    clearLocalStorage();
-  };
-
   const onMessageSend = (updatedChat: Chat) => {
     setChats(
       chats.map((chat) => {
@@ -63,7 +55,10 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/chats" element={<ChatList users={users} lastMessages={lastMessages}/>}>
+      <Route
+        path="/chats"
+        element={<ChatList users={users} lastMessages={lastMessages} />}
+      >
         <Route
           path=":id"
           element={<ChatDisplay chat={chat} onMessageSend={onMessageSend} />}
