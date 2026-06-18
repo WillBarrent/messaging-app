@@ -3,6 +3,7 @@ import type { Message, User } from "../types";
 import styled from "styled-components";
 
 import PfP from "../assets/pfp.jpeg";
+import { format } from "date-fns";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -58,6 +59,10 @@ const List = styled.div`
 const ChatLink = styled(Link)`
   text-decoration: none;
   color: #000;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const Chat = styled.div`
@@ -82,6 +87,10 @@ const UserInfo = styled.div`
 
 const LastMessage = styled.div`
   font-size: 15px;
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const Username = styled.div`
@@ -111,16 +120,19 @@ const ChatList = ({
           </Header>
           <List>
             {users.map((user, index) => {
+              const message = lastMessages[index]?.content;
+              const sentAt = format(new Date(lastMessages[index]?.createdAt || ""), "P");
+
               return (
-                <ChatLink to={`/chats/${user.id}`}>
-                  <Chat key={user.id}>
+                <ChatLink key={user.id} to={`/chats/${user.id}`}>
+                  <Chat>
                     <Pfp src={PfP} alt="" />
                     <ChatInfo>
                       <UserInfo>
                         <Username>{user.username}</Username>
-                        <LastMessageTime>22:00</LastMessageTime>
+                        <LastMessageTime>{sentAt}</LastMessageTime>
                       </UserInfo>
-                      <LastMessage>{lastMessages[index]?.content}</LastMessage>
+                      <LastMessage>{message}</LastMessage>
                     </ChatInfo>
                   </Chat>
                 </ChatLink>
@@ -128,6 +140,7 @@ const ChatList = ({
             })}
           </List>
         </Chats>
+
         <Outlet />
       </Layout>
     </Wrapper>
