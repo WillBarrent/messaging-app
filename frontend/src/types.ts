@@ -3,6 +3,7 @@ export interface Message {
   content: string;
   senderId: number | null;
   receiverId: number | null;
+  createdAt: string;
 }
 
 export interface User {
