@@ -17,7 +17,11 @@ const getAllUsersChats = async ({ userId }: { userId: number }) => {
       },
     },
     include: {
-      messages: true,
+      messages: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
       users: {
         where: {
           NOT: {
