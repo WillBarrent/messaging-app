@@ -6,6 +6,7 @@ import UserContext from "./UserContext";
 import ChatList from "./Pages/ChatList";
 import ChatDisplay from "./Pages/Chat";
 import type { Chat, User, UserContextType } from "./types";
+import NotFound from "./Pages/NotFound";
 
 const App = () => {
   const { user, setLocalStorage } = useContext(UserContext) as UserContextType;
@@ -66,6 +67,7 @@ const App = () => {
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="sign-up" element={<SignUp />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
