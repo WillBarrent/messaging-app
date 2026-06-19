@@ -148,7 +148,7 @@ const ChatDisplay = ({
     setMessage("");
 
     const data = await newMessage.json();
-    chat.messages.push(data);
+    chat.messages.unshift(data);
     onMessageSend(chat);
   };
 
