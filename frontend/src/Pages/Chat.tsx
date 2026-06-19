@@ -4,6 +4,7 @@ import type { Chat, UserContextType } from "../types";
 import styled from "styled-components";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { format } from "date-fns";
+import PfP from "../assets/pfp.jpeg";
 
 const Wrapper = styled.div`
   flex: 1;
@@ -59,7 +60,7 @@ const MessageSubmitButton = styled.button`
 `;
 
 const MessageSentAt = styled.div`
-  font-size: 10px;
+  font-size: 10px;  
   align-self: flex-end;
 `;
 
@@ -85,6 +86,25 @@ const MessageDisplay = styled.div<{ $isSender?: boolean }>`
   gap: 5px;
 `;
 
+const Pfp = styled.img`
+  width: 40px;
+  border-radius: 50%;
+`;
+
+const ChatInfo = styled.div`
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border-bottom: 5px solid black;
+`;
+
+const ChatInfoUsername = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+`;
+
 const ChatDisplay = ({
   chat,
   onMessageSend,
@@ -100,6 +120,7 @@ const ChatDisplay = ({
   }
 
   const chatterId = chat.users[0].id;
+  const chatterName = chat.users[0].username;
 
   const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -126,6 +147,11 @@ const ChatDisplay = ({
 
   return (
     <Wrapper>
+      <ChatInfo>
+        <Pfp src={PfP} alt="" />
+        <ChatInfoUsername>{chatterName}</ChatInfoUsername>
+      </ChatInfo>
+
       <Messages>
         {chat.messages.map((message) => {
           const isSender = message.senderId === user?.userId;
