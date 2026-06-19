@@ -25,6 +25,13 @@ const Messages = styled.div`
   justify-content: flex-start;
 
   padding: 20px;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #000; 
+  }
 `;
 
 const MessageForm = styled.form`
@@ -60,7 +67,7 @@ const MessageSubmitButton = styled.button`
 `;
 
 const MessageSentAt = styled.div`
-  font-size: 10px;  
+  font-size: 10px;
   align-self: flex-end;
 `;
 
