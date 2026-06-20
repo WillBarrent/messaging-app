@@ -16,7 +16,10 @@ const App = () => {
   });
   const params = useMatch("/chats/:id");
 
-  const chat = chats.find((c) => c.users[0].id === Number(params?.params.id));
+  const chat =
+    chats.length === 0
+      ? null
+      : chats.find((c) => c.users[0].id === Number(params?.params.id));
   const lastMessages = chats.map((chat) => {
     return chat.messages.at(0);
   });

@@ -30,7 +30,7 @@ const Messages = styled.div`
     width: 5px;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: #000; 
+    background-color: #000;
   }
 `;
 
@@ -112,18 +112,44 @@ const ChatInfoUsername = styled.div`
   font-weight: bold;
 `;
 
+const LoadingWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LoadingText = styled.div`
+  font-size: 30px;
+  font-weight: 500;
+`;
+
 const ChatDisplay = ({
   chat,
   onMessageSend,
 }: {
-  chat: Chat | undefined;
+  chat: Chat | null | undefined;
   onMessageSend: (updatedChat: Chat) => void;
 }) => {
   const { user } = useContext(UserContext) as UserContextType;
   const [message, setMessage] = useState<string>("");
 
-  if (!chat) {
-    return <div>Loading...</div>;
+  if (chat === null) {
+    return (
+      <Wrapper>
+        <LoadingWrapper>
+          <LoadingText>Loading...</LoadingText>
+        </LoadingWrapper>
+      </Wrapper>
+    );
+  } else if (chat === undefined) {
+    return (
+      <Wrapper>
+        <LoadingWrapper>
+          <LoadingText>Chat was not found</LoadingText>
+        </LoadingWrapper>
+      </Wrapper>
+    );
   }
 
   const chatterId = chat.users[0].id;
