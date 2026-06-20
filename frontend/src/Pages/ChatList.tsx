@@ -1,9 +1,13 @@
 import { Link, Outlet } from "react-router";
-import type { Message, User } from "../types";
+import type { Message, User, UserContextType } from "../types";
 import styled from "styled-components";
 
 import PfP from "../assets/pfp.jpeg";
+import { TbLogout } from "react-icons/tb";
 import { format } from "date-fns";
+import type React from "react";
+import { useContext } from "react";
+import UserContext from "../UserContext";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -19,6 +23,9 @@ const Chats = styled.div`
 
   border: 5px solid black;
   margin: 20px;
+
+  display: flex;
+  flex-direction: column;
 `;
 
 const Pfp = styled.img`
@@ -52,6 +59,9 @@ const SearchInput = styled.input`
 `;
 
 const List = styled.div`
+  overflow-y: auto;
+  flex: 1;
+
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -104,6 +114,28 @@ const LastMessageTime = styled.div`
   font-size: 12.5px;
 `;
 
+const Footer = styled.div`
+  padding: 20px;
+  border-top: 5px solid black;
+`;
+
+const Logout = styled.div`
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  &:hover {
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.5);
+  }
+`;
+
+const LogoutButton = styled.div`
+  font-weight: 500;
+  font-size: 25px;
+`;
+
 const ChatList = ({
   users,
   lastMessages,
@@ -111,6 +143,14 @@ const ChatList = ({
   users: User[];
   lastMessages: (Message | undefined)[];
 }) => {
+  const { clearLocalStorage } = useContext(UserContext) as UserContextType;
+
+  const onLogout = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    clearLocalStorage();
+  };
+
   return (
     <Wrapper>
       <Layout>
@@ -145,6 +185,13 @@ const ChatList = ({
               );
             })}
           </List>
+
+          <Footer>
+            <Logout>
+              <TbLogout size={25} />
+              <LogoutButton onClick={onLogout}>Logout</LogoutButton>
+            </Logout>
+          </Footer>
         </Chats>
 
         <Outlet />
