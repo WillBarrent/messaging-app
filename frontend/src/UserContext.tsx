@@ -21,7 +21,9 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     } else if (!user) {
       navigate("/login");
     } else if (
-      (location.pathname === "/login" || location.pathname === "/sign-up") &&
+      (location.pathname === "/login" ||
+        location.pathname === "/sign-up" ||
+        location.pathname === "/") &&
       user
     ) {
       navigate("/chats");
