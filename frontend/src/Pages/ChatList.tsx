@@ -19,7 +19,6 @@ const Chats = styled.div`
 
   border: 5px solid black;
   margin: 20px;
-  padding: 20px;
 `;
 
 const Pfp = styled.img`
@@ -31,7 +30,9 @@ const Header = styled.div`
   display: flex;
   align-items: stretch;
   gap: 10px;
-  margin-bottom: 20px;
+  padding: 20px;
+
+  border-bottom: 5px solid;
 `;
 
 const Search = styled.div`
@@ -54,6 +55,8 @@ const List = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  padding: 20px;
 `;
 
 const ChatLink = styled(Link)`
@@ -121,7 +124,10 @@ const ChatList = ({
           <List>
             {users.map((user, index) => {
               const message = lastMessages[index]?.content;
-              const sentAt = format(new Date(lastMessages[index]?.createdAt || ""), "P");
+              const sentAt = format(
+                new Date(lastMessages[index]?.createdAt || ""),
+                "P",
+              );
 
               return (
                 <ChatLink key={user.id} to={`/chats/${user.id}`}>
