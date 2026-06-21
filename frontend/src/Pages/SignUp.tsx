@@ -65,16 +65,30 @@ const Paragraph = styled.p`
   text-align: center;
 `;
 
+const Errors = styled.ul<{ $errors?: string[] | null }>`
+  padding: 10px 25px;
+  background-color: rgba(255, 0, 0, 0.25);
+  color: rgb(255, 0, 0);
+  font-size: 15px;
+  font-weight: bold;
+  display: ${(props) => (props.$errors ? "flex" : "none")};
+  flex-direction: column;
+  gap: 5px;
+`;
+
+const Error = styled.li``;
+
 const SignUp = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [errors, setErrors] = useState<string[] | null>(null);
 
   const navigate = useNavigate();
 
   const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    await fetch("http://localhost:3000/auth/sign-up", {
+    const request = await fetch("http://localhost:3000/auth/sign-up", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +99,25 @@ const SignUp = () => {
       }),
     });
 
-    navigate("/login");
+    const data = await request.json();
+
+    console.log(data);
+
+    if (!Object.keys(data).includes("error")) {
+      navigate("/login");
+    } else {
+      if (typeof data.error === "string") {
+        setErrors([data.error]);
+      } else {
+        setErrors(
+          data.error.def.map((error: { message: string }) => error.message),
+        );
+      }
+
+      setTimeout(() => {
+        setErrors(null);
+      }, 3000);
+    }
   };
 
   return (
@@ -93,6 +125,11 @@ const SignUp = () => {
       <Layout>
         <Title>Create Account</Title>
         <SignUpForm onSubmit={onSubmit}>
+          <Errors $errors={errors}>
+            {errors?.map((error) => {
+              return <Error key={error}>{error}</Error>;
+            })}
+          </Errors>
           <Label>
             Username
             <Input
