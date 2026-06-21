@@ -67,9 +67,18 @@ const Paragraph = styled.p`
   text-align: center;
 `;
 
+const Error = styled.div<{ $error?: string | null }>`
+  display: ${(props) => (props.$error ? "block" : "none")};
+  padding: 10px;
+  background-color: rgba(255, 0, 0, 0.25);
+  color: rgb(255, 0, 0);
+  font-weight: bold;
+`;
+
 const Login = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const { setLocalStorage } = useContext(UserContext) as UserContextType;
 
   const onSubmit = async (e: React.SyntheticEvent) => {
@@ -95,6 +104,14 @@ const Login = () => {
       Object.keys(data).includes("username")
     ) {
       setLocalStorage(data);
+    } else if (
+      "object" === typeof data &&
+      Object.keys(data).includes("error")
+    ) {
+      setError(data.error as string);
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
   };
 
@@ -103,6 +120,7 @@ const Login = () => {
       <Layout>
         <Title>Login</Title>
         <LoginForm onSubmit={onSubmit}>
+          <Error $error={error}>{error}</Error>
           <Label>
             Username
             <Input
