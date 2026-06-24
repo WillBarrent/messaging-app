@@ -1,41 +1,21 @@
 import prisma from "../db/prisma.ts";
 import type { Message, NewMessage } from "../types";
 
-const getMessages = async ({
-  receiverId,
-  senderId,
-}: {
-  receiverId: number;
-  senderId: number;
-}) => {
-  const messages = await prisma.message.findMany({
+const getChatMessagesById = async ({ chatId }: { chatId: number }) => {
+  const chat = await prisma.chat.findFirst({
     where: {
-      OR: [
-        {
-          receiverId: receiverId,
-          senderId: senderId,
-        },
-        {
-          senderId: receiverId,
-          receiverId: senderId,
-        },
-      ],
+      id: chatId,
     },
     include: {
-      receiver: {
-        select: {
-          username: true,
-        },
-      },
-      sender: {
-        select: {
-          username: true,
+      messages: {
+        orderBy: {
+          createdAt: "desc",
         },
       },
     },
   });
 
-  return messages;
+  return chat;
 };
 
 const createMessage = async ({
@@ -118,4 +98,9 @@ const deleteMessage = async ({ id }: { id: number }) => {
   });
 };
 
-export default { createMessage, getMessages, updateMessage, deleteMessage };
+export default {
+  createMessage,
+  getChatMessagesById,
+  updateMessage,
+  deleteMessage,
+};

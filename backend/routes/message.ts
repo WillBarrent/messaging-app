@@ -5,7 +5,7 @@ import validator from "../middlewares/validation.ts";
 const router = express.Router();
 
 router.get(
-  "/:senderId/:receiverId",
+  "/:chatId",
   passport.authenticate("jwt", {
     session: false,
     failWithError: true,

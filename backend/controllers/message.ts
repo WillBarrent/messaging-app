@@ -3,18 +3,14 @@ import type { Message, NewMessage } from "../types";
 import messageModel from "../models/message.ts";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-const messagesGet = async (
-  req: Request<{ receiverId: string; senderId: string }, unknown, string>,
-  res: Response,
-) => {
-  const { receiverId, senderId } = req.params;
+const messagesGet = async (req: Request<{ chatId: string }>, res: Response) => {
+  const { chatId } = req.params;
 
-  const messages = await messageModel.getMessages({
-    receiverId: Number(receiverId),
-    senderId: Number(senderId),
+  const chat = await messageModel.getChatMessagesById({
+    chatId: Number(chatId),
   });
 
-  res.json(messages);
+  res.json(chat);
 };
 
 const messagePost = async (
