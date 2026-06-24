@@ -7,6 +7,7 @@ import JwtStrategy from "./passport.ts";
 import authRouter from "./routes/auth.ts";
 import messageRouter from "./routes/message.ts";
 import userRouter from "./routes/user.ts";
+import chatRouter from "./routes/chat.ts";
 import errorHandlers from "./middlewares/error.ts";
 
 const app = express();
@@ -20,6 +21,7 @@ passport.use(JwtStrategy);
 app.use("/auth", authRouter);
 app.use("/messages", messageRouter);
 app.use("/users", userRouter);
+app.use("/chats", chatRouter);
 
 app.use(errorHandlers);
 
