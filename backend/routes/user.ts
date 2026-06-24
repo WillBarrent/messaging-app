@@ -13,13 +13,4 @@ router.get(
   userController.usersGet,
 );
 
-router.get(
-  "/chats/:userId",
-  passport.authenticate("jwt", {
-    session: false,
-    failWithError: true,
-  }) as RequestHandler,
-  userController.usersChatsGet,
-);
-
 export default router;
