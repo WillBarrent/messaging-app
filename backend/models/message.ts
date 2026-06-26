@@ -1,10 +1,21 @@
 import prisma from "../db/prisma.ts";
 import type { Message, NewMessage } from "../types";
 
-const getChatMessagesById = async ({ chatId }: { chatId: number }) => {
+const getChatMessagesById = async ({
+  chatId,
+  userId,
+}: {
+  chatId: number;
+  userId: number;
+}) => {
   const chat = await prisma.chat.findFirst({
     where: {
       id: chatId,
+      users: {
+        some: {
+          id: userId,
+        },
+      },
     },
     include: {
       messages: {

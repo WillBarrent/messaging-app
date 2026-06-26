@@ -1,16 +1,21 @@
 import { type Response, type Request, type NextFunction } from "express";
 import type { Message, NewMessage } from "../types";
-import messageModel from "../models/message.ts";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import jwt from "jsonwebtoken";
+import messageModel from "../models/message.ts";
 
 const messagesGet = async (req: Request<{ chatId: string }>, res: Response) => {
+  const token = req.headers.authorization;
+  const decodedToken = jwt.decode(token?.split("Bearer ")[1] || "");
   const { chatId } = req.params;
 
-  const chat = await messageModel.getChatMessagesById({
-    chatId: Number(chatId),
-  });
-
-  res.json(chat);
+  if (decodedToken !== null) {
+    const chat = await messageModel.getChatMessagesById({
+      chatId: Number(chatId),
+      userId: Number(decodedToken.sub),
+    });
+    res.json(chat);
+  }
 };
 
 const messagePost = async (
