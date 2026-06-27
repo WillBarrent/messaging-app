@@ -10,6 +10,12 @@ const getAllUsersChats = async ({ userId }: { userId: number }) => {
       },
     },
     include: {
+      messages: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 1,
+      },
       users: {
         where: {
           NOT: {
