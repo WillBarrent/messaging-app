@@ -38,4 +38,26 @@ const getUserByChatId = async ({
   return chat.users[0];
 };
 
-export default { getAllUsers, getUserByChatId };
+const updateUserById = async ({
+  userId,
+  username,
+  profilePictureUrl,
+}: {
+  userId: number;
+  username: string;
+  profilePictureUrl: string;
+}) => {
+  const user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      username,
+      profilePictureUrl,
+    },
+  });
+
+  return user;
+};
+
+export default { getAllUsers, getUserByChatId, updateUserById };

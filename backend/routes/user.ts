@@ -22,4 +22,13 @@ router.get(
   userController.userByChatIdGet,
 );
 
+router.put(
+  "/",
+  passport.authenticate("jwt", {
+    session: false,
+    failWithError: true,
+  }) as RequestHandler,
+  userController.userProfilePut,
+);
+
 export default router;
