@@ -13,12 +13,13 @@ datasource db {
 }
 
 model User {
-  id               Int       @id @default(autoincrement())
-  username         String    @unique
-  password         String
-  sentMessages     Message[] @relation("Sender")
-  receivedMessages Message[] @relation("Receiver")
-  chats            Chat[]
+  id                Int       @id @default(autoincrement())
+  username          String    @unique
+  password          String
+  profilePictureUrl String
+  sentMessages      Message[] @relation("Sender")
+  receivedMessages  Message[] @relation("Receiver")
+  chats             Chat[]
 }
 
 model Message {
