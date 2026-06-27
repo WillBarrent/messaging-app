@@ -1,10 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
-import type { Chat, UserContextType } from "../types";
+import type { Message, User, UserContextType } from "../types";
 import styled from "styled-components";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { format } from "date-fns";
 import PfP from "../assets/pfp.jpeg";
+import { useParams } from "react-router";
 
 const Wrapper = styled.div`
   flex: 1;
@@ -124,17 +125,46 @@ const LoadingText = styled.div`
   font-weight: 500;
 `;
 
-const ChatDisplay = ({
-  chat,
-  onMessageSend,
-}: {
-  chat: Chat | null | undefined;
-  onMessageSend: (updatedChat: Chat) => void;
-}) => {
+const ChatDisplay = () => {
   const { user } = useContext(UserContext) as UserContextType;
   const [message, setMessage] = useState<string>("");
+  const [messages, setMessages] = useState<Message[] | null>([]);
+  const [chatter, setChatter] = useState<User | null>(null);
+  const { id } = useParams();
 
-  if (chat === null) {
+  useEffect(() => {
+    if (user) {
+      fetch(`http://localhost:3000/users/${id}`, {
+        headers: {
+          Authorization: user?.token || "",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setChatter(data);
+        });
+    }
+  }, [user, id]);
+
+  useEffect(() => {
+    if (user) {
+      fetch(`http://localhost:3000/messages/${id}`, {
+        headers: {
+          Authorization: user?.token || "",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data === null) {
+            setMessages(null);
+          } else {
+            setMessages(data.messages);
+          }
+        });
+    }
+  }, [user, id]);
+
+  if (messages != null && messages.length === 0) {
     return (
       <Wrapper>
         <LoadingWrapper>
@@ -142,7 +172,7 @@ const ChatDisplay = ({
         </LoadingWrapper>
       </Wrapper>
     );
-  } else if (chat === undefined) {
+  } else if (messages === null) {
     return (
       <Wrapper>
         <LoadingWrapper>
@@ -152,9 +182,6 @@ const ChatDisplay = ({
     );
   }
 
-  const chatterId = chat.users[0].id;
-  const chatterName = chat.users[0].username;
-
   const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
@@ -163,7 +190,7 @@ const ChatDisplay = ({
       body: JSON.stringify({
         content: message,
         senderId: user?.userId,
-        receiverId: chatterId,
+        receiverId: chatter?.id,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -174,19 +201,18 @@ const ChatDisplay = ({
     setMessage("");
 
     const data = await newMessage.json();
-    chat.messages.unshift(data);
-    onMessageSend(chat);
+    setMessages([data, ...messages]);
   };
 
   return (
     <Wrapper>
       <ChatInfo>
         <Pfp src={PfP} alt="" />
-        <ChatInfoUsername>{chatterName}</ChatInfoUsername>
+        <ChatInfoUsername>{chatter?.username}</ChatInfoUsername>
       </ChatInfo>
 
       <Messages>
-        {chat.messages.map((message) => {
+        {messages.map((message) => {
           const isSender = message.senderId === user?.userId;
           const sentAt = format(new Date(message.createdAt), "PP, p");
 

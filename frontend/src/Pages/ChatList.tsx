@@ -1,12 +1,12 @@
 import { Link, Outlet } from "react-router";
-import type { Message, User, UserContextType } from "../types";
+import type { Chat, User, UserContextType } from "../types";
 import styled from "styled-components";
 
 import PfP from "../assets/pfp.jpeg";
 import { TbLogout } from "react-icons/tb";
 import { format } from "date-fns";
 import type React from "react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
 
 const Wrapper = styled.div`
@@ -136,14 +136,31 @@ const LogoutButton = styled.div`
   font-size: 25px;
 `;
 
-const ChatList = ({
-  users,
-  lastMessages,
-}: {
-  users: User[];
-  lastMessages: (Message | undefined)[];
-}) => {
-  const { clearLocalStorage } = useContext(UserContext) as UserContextType;
+const ChatList = () => {
+  const { user, clearLocalStorage } = useContext(
+    UserContext,
+  ) as UserContextType;
+  const [chats, setChats] = useState<Chat[]>([]);
+  const users: User[] = chats.map((chat) => {
+    return chat.users[0];
+  });
+  const lastMessages = chats.map((chat) => {
+    return chat.messages[0];
+  });
+
+  useEffect(() => {
+    if (user) {
+      fetch(`http://localhost:3000/chats/${user?.userId}`, {
+        headers: {
+          Authorization: user?.token || "",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setChats(data);
+        });
+    }
+  }, [user]);
 
   const onLogout = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -170,7 +187,7 @@ const ChatList = ({
               );
 
               return (
-                <ChatLink key={user.id} to={`/chats/${user.id}`}>
+                <ChatLink key={user.id} to={`/chats/${chats[index].id}`}>
                   <Chat>
                     <Pfp src={PfP} alt="" />
                     <ChatInfo>

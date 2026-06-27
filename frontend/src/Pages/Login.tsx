@@ -50,7 +50,7 @@ const Button = styled.button`
   font-size: 15px;
   font-weight: bold;
   outline: none;
-  border: 1px solid black;
+  border: 3px solid black;
   padding: 5px 10px;
   background-color: #000;
   color: #fff;
@@ -59,7 +59,6 @@ const Button = styled.button`
   &:hover {
     background-color: #fff;
     color: #000;
-    border: 3px solid black;
   }
 `;
 
