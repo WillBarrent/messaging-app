@@ -6,6 +6,7 @@ const createUser = async ({ username, password }: NewUser): Promise<User> => {
     data: {
       username,
       password,
+      profilePictureUrl: process.env.DEFAULT_PFP_URL || "",
     },
   });
 
