@@ -32,8 +32,13 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [location.pathname, user, navigate]);
 
-  const setLocalStorage = ({ token, userId, username }: IUserContext) => {
-    const data = { token, userId, username };
+  const setLocalStorage = ({
+    token,
+    userId,
+    username,
+    pfpUrl,
+  }: IUserContext) => {
+    const data = { token, userId, username, pfpUrl };
     if (token !== undefined && userId !== undefined) {
       localStorage.setItem("user", JSON.stringify(data));
 

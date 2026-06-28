@@ -42,11 +42,12 @@ const loginPost = async (
   if (user) {
     const isPasswordValid = await validatePassword(password, user.password);
     if (isPasswordValid) {
-      const { token, userId, username } = createJWT(user);
+      const { token, userId, username, pfpUrl } = createJWT(user);
       res.json({
         token,
         userId,
         username,
+        pfpUrl,
       });
     } else {
       res.status(401).json({

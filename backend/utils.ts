@@ -18,7 +18,9 @@ export const validatePassword = async (
   return isCorrect;
 };
 
-export const createJWT = (user: User): { token: string; userId: number, username: string } => {
+export const createJWT = (
+  user: User,
+): { token: string; userId: number; username: string; pfpUrl: string } => {
   const _id = user.id;
   const payload: Payload = {
     sub: _id,
@@ -32,6 +34,7 @@ export const createJWT = (user: User): { token: string; userId: number, username
   return {
     token: "Bearer " + signedToken,
     userId: _id,
-    username: user.username
+    username: user.username,
+    pfpUrl: user.profilePictureUrl,
   };
 };

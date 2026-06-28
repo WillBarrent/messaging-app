@@ -4,6 +4,7 @@ export interface User {
   id: number;
   username: string;
   password: string;
+  profilePictureUrl: string;
 }
 
 export type PlainUser = Omit<User, "password">;

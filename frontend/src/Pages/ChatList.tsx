@@ -1,8 +1,6 @@
 import { Link, Outlet } from "react-router";
 import type { Chat, User, UserContextType } from "../types";
 import styled from "styled-components";
-
-import PfP from "../assets/pfp.jpeg";
 import { TbLogout } from "react-icons/tb";
 import { format } from "date-fns";
 import type React from "react";
@@ -173,7 +171,7 @@ const ChatList = () => {
       <Layout>
         <Chats>
           <Header>
-            <Pfp src={PfP} alt="" />
+            <Pfp src={user?.pfpUrl} alt="" />
             <Search>
               <SearchInput type="text" placeholder="Search" />
             </Search>

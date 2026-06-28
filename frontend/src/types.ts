@@ -22,10 +22,11 @@ export interface IUserContext {
   token: string | undefined;
   userId: number | undefined;
   username: string | undefined;
+  pfpUrl: string | undefined
 }
 
 export interface UserContextType {
   user: IUserContext | null;
-  setLocalStorage: ({ token, userId, username }: IUserContext) => void;
+  setLocalStorage: ({ token, userId, username, pfpUrl }: IUserContext) => void;
   clearLocalStorage: () => void;
 }

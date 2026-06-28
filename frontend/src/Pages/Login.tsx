@@ -98,9 +98,7 @@ const Login = () => {
 
     if (
       "object" === typeof data &&
-      Object.keys(data).includes("token") &&
-      Object.keys(data).includes("userId") &&
-      Object.keys(data).includes("username")
+      Object.keys(data).includes("token")
     ) {
       setLocalStorage(data);
     } else if (
