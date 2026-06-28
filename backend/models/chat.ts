@@ -25,6 +25,7 @@ const getAllUsersChats = async ({ userId }: { userId: number }) => {
         select: {
           id: true,
           username: true,
+          profilePictureUrl: true,
         },
       },
     },

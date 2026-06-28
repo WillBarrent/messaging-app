@@ -28,6 +28,7 @@ const getUserByChatId = async ({
         select: {
           id: true,
           username: true,
+          profilePictureUrl: true
         },
       },
     },
