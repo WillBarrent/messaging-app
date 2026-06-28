@@ -189,7 +189,7 @@ const ChatList = () => {
               return (
                 <ChatLink key={user.id} to={`/chats/${chats[index].id}`}>
                   <Chat>
-                    <Pfp src={PfP} alt="" />
+                    <Pfp src={user.profilePictureUrl} alt="Pfp" />
                     <ChatInfo>
                       <UserInfo>
                         <Username>{user.username}</Username>

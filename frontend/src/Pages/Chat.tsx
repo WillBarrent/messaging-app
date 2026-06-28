@@ -4,7 +4,6 @@ import type { Message, User, UserContextType } from "../types";
 import styled from "styled-components";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { format } from "date-fns";
-import PfP from "../assets/pfp.jpeg";
 import { useParams } from "react-router";
 
 const Wrapper = styled.div`
@@ -207,7 +206,7 @@ const ChatDisplay = () => {
   return (
     <Wrapper>
       <ChatInfo>
-        <Pfp src={PfP} alt="" />
+        <Pfp src={chatter?.profilePictureUrl} alt="" />
         <ChatInfoUsername>{chatter?.username}</ChatInfoUsername>
       </ChatInfo>
 

@@ -9,6 +9,7 @@ export interface Message {
 export interface User {
   id: number;
   username: string;
+  profilePictureUrl: string;
 }
 
 export interface Chat {
