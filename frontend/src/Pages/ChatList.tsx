@@ -171,7 +171,9 @@ const ChatList = () => {
       <Layout>
         <Chats>
           <Header>
-            <Pfp src={user?.pfpUrl} alt="" />
+            <Link to={"/profile"}>
+              <Pfp src={user?.pfpUrl} alt="" />
+            </Link>
             <Search>
               <SearchInput type="text" placeholder="Search" />
             </Search>

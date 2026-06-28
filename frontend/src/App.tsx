@@ -7,6 +7,7 @@ import ChatList from "./Pages/ChatList";
 import ChatDisplay from "./Pages/Chat";
 import type { UserContextType } from "./types";
 import NotFound from "./Pages/NotFound";
+import Profile from "./Pages/Profile";
 
 const App = () => {
   const { user, setLocalStorage } = useContext(UserContext) as UserContextType;
@@ -21,13 +22,11 @@ const App = () => {
   return (
     <Routes>
       <Route path="/chats" element={<ChatList />}>
-        <Route
-          path=":id"
-          element={<ChatDisplay />}
-        />
+        <Route path=":id" element={<ChatDisplay />} />
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="sign-up" element={<SignUp />} />
+      <Route path="profile" element={<Profile />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
