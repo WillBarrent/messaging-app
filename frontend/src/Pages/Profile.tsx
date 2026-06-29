@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import UserContext from "../UserContext";
 import type { UserContextType } from "../types";
@@ -92,11 +92,15 @@ const ImageUploaderInput = styled.input`
 
 const Pfp = styled.img`
   width: 40px;
+  height: 40px;
   border-radius: 50%;
 `;
 
 const Profile = () => {
   const { user } = useContext(UserContext) as UserContextType;
+
+  const [username, setUsername] = useState<string | undefined>(user?.username);
+  const [image, setImage] = useState<File | null>(null);
 
   if (!user) {
     return (
@@ -108,6 +112,15 @@ const Profile = () => {
     );
   }
 
+  const onFileUpload = (
+    e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
+  ) => {
+    if (e.target.files !== null) {
+      const file = e.target.files[0];
+      setImage(file);
+    }
+  };
+
   return (
     <Wrapper>
       <Layout>
@@ -116,17 +129,31 @@ const Profile = () => {
           <Label>
             Profile Picture
             <ImageUploader>
-              <Pfp src={user?.pfpUrl} alt="" />
+              <Pfp
+                src={image !== null ? URL.createObjectURL(image) : user?.pfpUrl}
+                alt=""
+              />
               <ImageUploaderLabel>
                 Change Profile Picture
-                <ImageUploaderInput type="file" />
+                <ImageUploaderInput
+                  type="file"
+                  accept="image/jpeg, image/png, image/jpg"
+                  onChange={onFileUpload}
+                />
               </ImageUploaderLabel>
             </ImageUploader>
           </Label>
 
           <Label>
             Username
-            <Input type="text" placeholder="Username" value={user.username} />
+            <Input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+            />
           </Label>
           <Button>Update</Button>
         </EditForm>
