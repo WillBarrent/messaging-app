@@ -4,7 +4,11 @@ import type { PlainUser } from "../types";
 const getAllUsers = async (): Promise<PlainUser[]> => {
   const users = await prisma.user.findMany({});
 
-  return users.map(({ id, username }) => ({ id, username }));
+  return users.map(({ id, username, profilePictureUrl }) => ({
+    id,
+    username,
+    profilePictureUrl,
+  }));
 };
 
 const getUserByChatId = async ({
@@ -28,7 +32,7 @@ const getUserByChatId = async ({
         select: {
           id: true,
           username: true,
-          profilePictureUrl: true
+          profilePictureUrl: true,
         },
       },
     },
