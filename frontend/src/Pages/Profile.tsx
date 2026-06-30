@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import UserContext from "../UserContext";
 import type { UserContextType } from "../types";
+import { createClient } from "@supabase/supabase-js";
+import { Link, useNavigate } from "react-router";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -44,6 +46,12 @@ const Input = styled.input`
   padding: 5px 10px;
 `;
 
+const ActionsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
 const Button = styled.button`
   font-family: inherit;
   font-size: 15px;
@@ -58,6 +66,25 @@ const Button = styled.button`
   &:hover {
     background-color: #fff;
     color: #000;
+  }
+`;
+
+const BackLink = styled(Link)`
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  border: 3px solid black;
+  padding: 5px 10px;
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+
+  text-decoration: none;
+  text-align: center;
+
+  &:hover {
+    background-color: #000;
+    color: #fff;
   }
 `;
 
@@ -96,11 +123,18 @@ const Pfp = styled.img`
   border-radius: 50%;
 `;
 
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_SECRET_KEY,
+);
+
 const Profile = () => {
-  const { user } = useContext(UserContext) as UserContextType;
+  const { user, setLocalStorage } = useContext(UserContext) as UserContextType;
 
   const [username, setUsername] = useState<string | undefined>(user?.username);
   const [image, setImage] = useState<File | null>(null);
+
+  const navigate = useNavigate();
 
   if (!user) {
     return (
@@ -121,11 +155,71 @@ const Profile = () => {
     }
   };
 
+  const onSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if ((!image && !username) || username === user.username) {
+      return;
+    }
+
+    const usernameToPass = username !== undefined ? username : user.username;
+    let imageToPass = user.pfpUrl;
+
+    if (image) {
+      const imgType = image.type.split("image/")[1];
+
+      const { data, error } = await supabase.storage
+        .from("pfp")
+        .upload(`${usernameToPass}/pfp.${imgType}`, image, {
+          upsert: true,
+        });
+
+      if (!error) {
+        // 3_122_064_000 === 99 years
+        const info = await supabase.storage
+          .from("pfp")
+          .createSignedUrl(data.path, 3_122_064_000);
+
+        if (info.error) {
+          // Set Error Message
+        }
+
+        imageToPass = info.data?.signedUrl;
+      } else {
+        // Set Error Message
+      }
+    }
+
+    await fetch("http://localhost:3000/users/", {
+      method: "PUT",
+      body: JSON.stringify({
+        username: usernameToPass,
+        pfpUrl: imageToPass,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: user?.token || "",
+      },
+    });
+
+    setLocalStorage({
+      ...user,
+      pfpUrl: imageToPass,
+      username: usernameToPass,
+    });
+
+    setUsername("");
+    setImage(null);
+
+    navigate("/", {
+      flushSync: true,
+    });
+  };
+
   return (
     <Wrapper>
       <Layout>
         <Title>Edit Profile</Title>
-        <EditForm>
+        <EditForm onSubmit={onSubmit}>
           <Label>
             Profile Picture
             <ImageUploader>
@@ -149,13 +243,16 @@ const Profile = () => {
             <Input
               type="text"
               placeholder="Username"
-              value={username}
+              value={username !== undefined ? username : user.username}
               onChange={(e) => {
                 setUsername(e.target.value);
               }}
             />
           </Label>
-          <Button>Update</Button>
+          <ActionsWrapper>
+            <Button>Update</Button>
+            <BackLink to={"/"}>Back To Chats</BackLink>
+          </ActionsWrapper>
         </EditForm>
       </Layout>
     </Wrapper>
