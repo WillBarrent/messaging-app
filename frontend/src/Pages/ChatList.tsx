@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useNavigate } from "react-router";
 import type { Chat, User, UserContextType } from "../types";
 import styled from "styled-components";
 import { TbLogout } from "react-icons/tb";
@@ -28,6 +28,7 @@ const Chats = styled.div`
 
 const Pfp = styled.img`
   width: 40px;
+  height: 40px;
   border-radius: 50%;
 `;
 
@@ -139,6 +140,7 @@ const ChatList = () => {
     UserContext,
   ) as UserContextType;
   const [chats, setChats] = useState<Chat[]>([]);
+  const navigate = useNavigate();
   const users: User[] = chats.map((chat) => {
     return chat.users[0];
   });
@@ -164,6 +166,8 @@ const ChatList = () => {
     e.preventDefault();
 
     clearLocalStorage();
+
+    navigate("/login");
   };
 
   return (
