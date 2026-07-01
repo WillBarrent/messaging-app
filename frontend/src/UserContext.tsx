@@ -14,21 +14,22 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === "/login" && !user) {
-      navigate("/login");
-    } else if (location.pathname === "/sign-up" && !user) {
-      navigate("/sign-up");
-    } else if (!user) {
-      navigate("/login");
-    } else if (
-      (location.pathname === "/login" ||
-        location.pathname === "/sign-up" ||
-        location.pathname === "/") &&
-      user
-    ) {
-      navigate("/chats");
+    if (!user) {
+      if (location.pathname === "/login" || location.pathname === "/sign-up") {
+        navigate(location.pathname);
+      } else {
+        navigate("/login");
+      }
     } else {
-      navigate(location.pathname);
+      if (
+        location.pathname === "/" ||
+        location.pathname === "/login" ||
+        location.pathname === "/sign-up"
+      ) {
+        navigate("/chats");
+      } else {
+        navigate(location.pathname);
+      }
     }
   }, [location.pathname, user, navigate]);
 
@@ -41,13 +42,12 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const data = { token, userId, username, pfpUrl };
     if (token !== undefined && userId !== undefined) {
       localStorage.setItem("user", JSON.stringify(data));
-
       setUser(data);
     }
   };
 
   const clearLocalStorage = () => {
-    localStorage.removeItem("user");
+    localStorage.clear();
     setUser(null);
   };
 

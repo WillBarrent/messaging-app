@@ -210,9 +210,7 @@ const Profile = () => {
     setUsername("");
     setImage(null);
 
-    navigate("/", {
-      flushSync: true,
-    });
+    navigate("/");
   };
 
   return (
