@@ -1,5 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import React, { createContext, useState } from "react";
 import type { IUserContext, UserContextType } from "./types";
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -10,28 +9,6 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<IUserContext | null>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (!user) {
-      if (location.pathname === "/login" || location.pathname === "/sign-up") {
-        navigate(location.pathname);
-      } else {
-        navigate("/login");
-      }
-    } else {
-      if (
-        location.pathname === "/" ||
-        location.pathname === "/login" ||
-        location.pathname === "/sign-up"
-      ) {
-        navigate("/chats");
-      } else {
-        navigate(location.pathname);
-      }
-    }
-  }, [location.pathname, user, navigate]);
 
   const setLocalStorage = ({
     token,
@@ -51,8 +28,16 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(null);
   };
 
+  const isLoggedIn = () => {
+    if (localStorage.getItem("user")) {
+      return true;
+    }
+
+    return false;
+  };
+
   return (
-    <UserContext.Provider value={{ user, setLocalStorage, clearLocalStorage }}>
+    <UserContext.Provider value={{ user, setLocalStorage, clearLocalStorage, isLoggedIn }}>
       {children}
     </UserContext.Provider>
   );
