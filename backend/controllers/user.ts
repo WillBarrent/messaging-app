@@ -20,6 +20,12 @@ const userProfilePut = async (
   const userId = decodedToken?.sub;
   const { username, pfpUrl } = req.body;
 
+  if (username.length < 3) {
+    return res
+      .status(400)
+      .json({ error: "Username must contain at least 3 characters" });
+  }
+
   try {
     const user = await userModel.updateUserById({
       userId: Number(userId),
@@ -27,17 +33,17 @@ const userProfilePut = async (
       profilePictureUrl: pfpUrl,
     });
 
-    res.json({
+    return res.json({
       user,
     });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
-        res.status(400).json({
+        return res.status(400).json({
           error: "User was not found",
         });
       } else {
-        next(error);
+        return next(error);
       }
     }
   }

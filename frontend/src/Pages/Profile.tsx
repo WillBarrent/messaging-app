@@ -123,6 +123,14 @@ const Pfp = styled.img`
   border-radius: 50%;
 `;
 
+const Error = styled.div<{ $error?: string | null }>`
+  display: ${(props) => (props.$error ? "block" : "none")};
+  padding: 10px;
+  background-color: rgba(255, 0, 0, 0.25);
+  color: rgb(255, 0, 0);
+  font-weight: bold;
+`;
+
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_SECRET_KEY,
@@ -133,6 +141,7 @@ const Profile = () => {
 
   const [username, setUsername] = useState<string | undefined>(user?.username);
   const [image, setImage] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -145,6 +154,13 @@ const Profile = () => {
       </Wrapper>
     );
   }
+
+  const onError = (errorMessage: string) => {
+    setError(errorMessage);
+    setTimeout(() => {
+      setError(null);
+    }, 3000);
+  };
 
   const onFileUpload = (
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
@@ -180,16 +196,18 @@ const Profile = () => {
           .createSignedUrl(data.path, 3_122_064_000);
 
         if (info.error) {
-          // Set Error Message
+          onError(info.error.message);
+          return;
         }
 
         imageToPass = info.data?.signedUrl;
       } else {
-        // Set Error Message
+        onError(error.message);
+        return;
       }
     }
 
-    await fetch("http://localhost:3000/users/", {
+    const request = await fetch("http://localhost:3000/users/", {
       method: "PUT",
       body: JSON.stringify({
         username: usernameToPass,
@@ -201,6 +219,13 @@ const Profile = () => {
       },
     });
 
+    const data = await request.json();
+
+    if (data.error) {
+      onError(data.error);
+      return;
+    }
+
     setLocalStorage({
       ...user,
       pfpUrl: imageToPass,
@@ -210,7 +235,7 @@ const Profile = () => {
     setUsername("");
     setImage(null);
 
-    navigate("/");
+    navigate("/chats");
   };
 
   return (
@@ -218,6 +243,7 @@ const Profile = () => {
       <Layout>
         <Title>Edit Profile</Title>
         <EditForm onSubmit={onSubmit}>
+          <Error $error={error}>{error}</Error>
           <Label>
             Profile Picture
             <ImageUploader>
@@ -249,7 +275,7 @@ const Profile = () => {
           </Label>
           <ActionsWrapper>
             <Button>Update</Button>
-            <BackLink to={"/"}>Back To Chats</BackLink>
+            <BackLink to={"/chats"}>Back To Chats</BackLink>
           </ActionsWrapper>
         </EditForm>
       </Layout>
