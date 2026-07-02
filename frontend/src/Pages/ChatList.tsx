@@ -7,6 +7,7 @@ import type React from "react";
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
 import { RiSendPlaneFill } from "react-icons/ri";
+import { IoMdClose } from "react-icons/io";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -35,7 +36,7 @@ const Pfp = styled.img`
 
 const Header = styled.div`
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 10px;
   padding: 20px;
 
@@ -167,8 +168,11 @@ const ChatList = () => {
   const { user, clearLocalStorage } = useContext(
     UserContext,
   ) as UserContextType;
+
   const [chats, setChats] = useState<Chat[]>([]);
   const [search, setSearch] = useState<string>("");
+  const [searchUsers, setSearchUsers] = useState<User[]>([]);
+
   const navigate = useNavigate();
   const users: User[] = chats.map((chat) => {
     return chat.users[0];
@@ -199,6 +203,42 @@ const ChatList = () => {
     navigate("/login");
   };
 
+  const onSearch = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    const request = await fetch("http://localhost:3000/users", {
+      headers: {
+        Authorization: user?.token || "",
+      },
+    });
+
+    const usersData = await request.json();
+
+    const properUsers = usersData.filter((user: User) => {
+      if (
+        !users
+          .map((user) => user.username.toLowerCase())
+          .includes(user.username.toLowerCase()) &&
+        search.length !== 0 &&
+        user.username.toLowerCase().startsWith(search.toLowerCase())
+      ) {
+        return true;
+      }
+
+      return false;
+    });
+
+    setSearch("");
+    setSearchUsers(properUsers);
+  };
+
+  const onClose = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+
+    setSearch("");
+    setSearchUsers([]);
+  };
+
   return (
     <Wrapper>
       <Layout>
@@ -207,7 +247,9 @@ const ChatList = () => {
             <Link to={"/profile"}>
               <Pfp src={user?.pfpUrl} alt="" />
             </Link>
-            <SearchForm>
+            <SearchForm
+              onSubmit={searchUsers.length === 0 ? onSearch : onClose}
+            >
               <SearchInput
                 type="text"
                 placeholder="Search"
@@ -218,37 +260,57 @@ const ChatList = () => {
               />
               <SearchSubmitButtonWrapper>
                 <SearchSubmitButton type="submit">
-                  <RiSendPlaneFill size={20} color="#fff" />
+                  {searchUsers.length === 0 ? (
+                    <RiSendPlaneFill size={20} color="#fff" />
+                  ) : (
+                    <IoMdClose size={20} color="#fff" />
+                  )}
                 </SearchSubmitButton>
               </SearchSubmitButtonWrapper>
             </SearchForm>
           </Header>
 
           <List>
-            {users.length === 0 && <NoChats>Find someone to chat!</NoChats>}
-
-            {users.map((user, index) => {
-              const message = lastMessages[index]?.content;
-              const sentAt = format(
-                new Date(lastMessages[index]?.createdAt || ""),
-                "P",
-              );
-
-              return (
-                <ChatLink key={user.id} to={`/chats/${chats[index].id}`}>
+            {searchUsers.length === 0 ? (
+              <NoChats>Find someone to chat!</NoChats>
+            ) : (
+              searchUsers.map((user) => {
+                return (
                   <Chat>
                     <Pfp src={user.profilePictureUrl} alt="Pfp" />
                     <ChatInfo>
                       <UserInfo>
                         <Username>{user.username}</Username>
-                        <LastMessageTime>{sentAt}</LastMessageTime>
                       </UserInfo>
-                      <LastMessage>{message}</LastMessage>
                     </ChatInfo>
                   </Chat>
-                </ChatLink>
-              );
-            })}
+                );
+              })
+            )}
+
+            {searchUsers.length === 0 &&
+              users.map((user, index) => {
+                const message = lastMessages[index]?.content;
+                const sentAt = format(
+                  new Date(lastMessages[index]?.createdAt || ""),
+                  "P",
+                );
+
+                return (
+                  <ChatLink key={user.id} to={`/chats/${chats[index].id}`}>
+                    <Chat>
+                      <Pfp src={user.profilePictureUrl} alt="Pfp" />
+                      <ChatInfo>
+                        <UserInfo>
+                          <Username>{user.username}</Username>
+                          <LastMessageTime>{sentAt}</LastMessageTime>
+                        </UserInfo>
+                        <LastMessage>{message}</LastMessage>
+                      </ChatInfo>
+                    </Chat>
+                  </ChatLink>
+                );
+              })}
           </List>
 
           <Footer>
