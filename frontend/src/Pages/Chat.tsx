@@ -66,15 +66,15 @@ const MessageSubmitButton = styled.button`
   }
 `;
 
-const MessageSentAt = styled.div`
-  font-size: 10px;
-  align-self: flex-end;
-`;
-
 const MessageSubmitButtonWrapper = styled.div`
   padding: 5px;
   border: 3px solid black;
   border-left: 0px;
+`;
+
+const MessageSentAt = styled.div`
+  font-size: 10px;
+  align-self: flex-end;
 `;
 
 const MessageDisplay = styled.div<{ $isSender?: boolean }>`

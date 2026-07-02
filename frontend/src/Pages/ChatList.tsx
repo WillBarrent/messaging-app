@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import type React from "react";
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
+import { RiSendPlaneFill } from "react-icons/ri";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -39,22 +40,6 @@ const Header = styled.div`
   padding: 20px;
 
   border-bottom: 5px solid;
-`;
-
-const Search = styled.div`
-  flex: 1;
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  height: 100%;
-
-  padding: 10px 5px;
-  font-family: inherit;
-  font-size: 15px;
-
-  border: 3px solid black;
-  outline: none;
 `;
 
 const List = styled.div`
@@ -135,11 +120,55 @@ const LogoutButton = styled.div`
   font-size: 25px;
 `;
 
+const NoChats = styled.div`
+  text-align: center;
+  font-weight: 300;
+  font-size: 20px;
+`;
+
+const SearchForm = styled.form`
+  width: 100%;
+  margin-bottom: 0;
+
+  display: flex;
+`;
+
+const SearchInput = styled.input`
+  flex: 1;
+  outline: none;
+  border: 3px solid black;
+  border-right: 0px;
+  padding: 5px;
+  font-family: inherit;
+  font-size: 15px;
+`;
+
+const SearchSubmitButton = styled.button`
+  display: flex;
+  padding: 5px;
+  outline: none;
+  border: none;
+  border-radius: 50%;
+  background-color: #000;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+`;
+
+const SearchSubmitButtonWrapper = styled.div`
+  padding: 5px;
+  border: 3px solid black;
+  border-left: 0px;
+`;
+
 const ChatList = () => {
   const { user, clearLocalStorage } = useContext(
     UserContext,
   ) as UserContextType;
   const [chats, setChats] = useState<Chat[]>([]);
+  const [search, setSearch] = useState<string>("");
   const navigate = useNavigate();
   const users: User[] = chats.map((chat) => {
     return chat.users[0];
@@ -178,11 +207,26 @@ const ChatList = () => {
             <Link to={"/profile"}>
               <Pfp src={user?.pfpUrl} alt="" />
             </Link>
-            <Search>
-              <SearchInput type="text" placeholder="Search" />
-            </Search>
+            <SearchForm>
+              <SearchInput
+                type="text"
+                placeholder="Search"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+              />
+              <SearchSubmitButtonWrapper>
+                <SearchSubmitButton type="submit">
+                  <RiSendPlaneFill size={20} color="#fff" />
+                </SearchSubmitButton>
+              </SearchSubmitButtonWrapper>
+            </SearchForm>
           </Header>
+
           <List>
+            {users.length === 0 && <NoChats>Find someone to chat!</NoChats>}
+
             {users.map((user, index) => {
               const message = lastMessages[index]?.content;
               const sentAt = format(
