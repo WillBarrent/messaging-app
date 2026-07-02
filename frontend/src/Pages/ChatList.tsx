@@ -271,9 +271,11 @@ const ChatList = () => {
           </Header>
 
           <List>
-            {searchUsers.length === 0 ? (
+            {searchUsers.length === 0 && users.length === 0 ? (
               <NoChats>Find someone to chat!</NoChats>
-            ) : (
+            ) : null}
+
+            {searchUsers.length !== 0 &&
               searchUsers.map((user) => {
                 return (
                   <Chat>
@@ -285,8 +287,7 @@ const ChatList = () => {
                     </ChatInfo>
                   </Chat>
                 );
-              })
-            )}
+              })}
 
             {searchUsers.length === 0 &&
               users.map((user, index) => {
