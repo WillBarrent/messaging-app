@@ -23,4 +23,22 @@ const chatsGet = async (req: Request<{ userId: string }>, res: Response) => {
   }
 };
 
-export default { chatsGet };
+const chatsPost = async (
+  req: Request<unknown, unknown, { chatterId: number }>,
+  res: Response,
+) => {
+  const token = req.headers.authorization;
+  const decodedToken = jwt.decode(token?.split("Bearer ")[1] || "");
+
+  const userId = decodedToken?.sub;
+  const { chatterId } = req.body;
+
+  const chat = await chatModel.createChat({
+    senderId: Number(userId),
+    receiverId: Number(chatterId),
+  });
+
+  res.json(chat);
+};
+
+export default { chatsGet, chatsPost };

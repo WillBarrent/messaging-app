@@ -34,4 +34,22 @@ const getAllUsersChats = async ({ userId }: { userId: number }) => {
   return chats;
 };
 
-export default { getAllUsersChats };
+const createChat = async ({
+  senderId,
+  receiverId,
+}: {
+  senderId: number;
+  receiverId: number;
+}) => {
+  const chat = await prisma.chat.create({
+    data: {
+      users: {
+        connect: [{ id: receiverId }, { id: senderId }],
+      },
+    },
+  });
+
+  return chat;
+};
+
+export default { getAllUsersChats, createChat };
