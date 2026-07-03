@@ -127,7 +127,7 @@ const LoadingText = styled.div`
 const ChatDisplay = () => {
   const { user } = useContext(UserContext) as UserContextType;
   const [message, setMessage] = useState<string>("");
-  const [messages, setMessages] = useState<Message[] | null>([]);
+  const [messages, setMessages] = useState<Message[] | null | undefined>(undefined);
   const [chatter, setChatter] = useState<User | null>(null);
   const { id } = useParams();
 
@@ -163,7 +163,7 @@ const ChatDisplay = () => {
     }
   }, [user, id]);
 
-  if (messages != null && messages.length === 0) {
+  if (messages === undefined) {
     return (
       <Wrapper>
         <LoadingWrapper>

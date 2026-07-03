@@ -57,10 +57,6 @@ const List = styled.div`
 const ChatLink = styled(Link)`
   text-decoration: none;
   color: #000;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
 `;
 
 const Chat = styled.div`
@@ -70,6 +66,11 @@ const Chat = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
 `;
 
 const ChatInfo = styled.div`
@@ -292,10 +293,9 @@ const ChatList = () => {
             {searchUsers.length === 0 &&
               users.map((user, index) => {
                 const message = lastMessages[index]?.content;
-                const sentAt = format(
-                  new Date(lastMessages[index]?.createdAt || ""),
-                  "P",
-                );
+                const sentAt = lastMessages[index]
+                  ? format(new Date(lastMessages[index]?.createdAt || ""), "P")
+                  : "";
 
                 return (
                   <ChatLink key={user.id} to={`/chats/${chats[index].id}`}>
