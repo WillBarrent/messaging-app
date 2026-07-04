@@ -240,6 +240,25 @@ const ChatList = () => {
     setSearchUsers([]);
   };
 
+  const onChat = async (chatterId: number) => {
+    setSearchUsers([]);
+
+    const request = await fetch("http://localhost:3000/chats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: user?.token || "",
+      },
+      body: JSON.stringify({
+        chatterId,
+      }),
+    });
+
+    const data = await request.json();
+
+    setChats([...chats, data]);
+  };
+
   return (
     <Wrapper>
       <Layout>
@@ -279,7 +298,12 @@ const ChatList = () => {
             {searchUsers.length !== 0 &&
               searchUsers.map((user) => {
                 return (
-                  <Chat>
+                  <Chat
+                    key={user.id}
+                    onClick={async () => {
+                      await onChat(user.id);
+                    }}
+                  >
                     <Pfp src={user.profilePictureUrl} alt="Pfp" />
                     <ChatInfo>
                       <UserInfo>
