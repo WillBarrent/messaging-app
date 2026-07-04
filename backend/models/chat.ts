@@ -47,6 +47,26 @@ const createChat = async ({
         connect: [{ id: receiverId }, { id: senderId }],
       },
     },
+    include: {
+      messages: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 1,
+      },
+      users: {
+        where: {
+          NOT: {
+            id: senderId,
+          },
+        },
+        select: {
+          id: true,
+          username: true,
+          profilePictureUrl: true,
+        },
+      },
+    },
   });
 
   return chat;
