@@ -77,6 +77,8 @@ const Errors = styled.ul<{ $errors?: string[] | null }>`
 
 const Error = styled.li``;
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 const SignUp = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -87,7 +89,7 @@ const SignUp = () => {
   const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const request = await fetch("http://localhost:3000/auth/sign-up", {
+    const request = await fetch(`${SERVER_URL}/auth/sign-up`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

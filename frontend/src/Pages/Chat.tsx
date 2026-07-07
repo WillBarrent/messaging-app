@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 const Messages = styled.div`
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 
   display: flex;
   flex-direction: column-reverse;
@@ -124,16 +125,20 @@ const LoadingText = styled.div`
   font-weight: 500;
 `;
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 const ChatDisplay = () => {
   const { user } = useContext(UserContext) as UserContextType;
   const [message, setMessage] = useState<string>("");
-  const [messages, setMessages] = useState<Message[] | null | undefined>(undefined);
+  const [messages, setMessages] = useState<Message[] | null | undefined>(
+    undefined,
+  );
   const [chatter, setChatter] = useState<User | null>(null);
   const { id } = useParams();
 
   useEffect(() => {
     if (user) {
-      fetch(`http://localhost:3000/users/${id}`, {
+      fetch(`${SERVER_URL}/users/${id}`, {
         headers: {
           Authorization: user?.token || "",
         },
@@ -147,7 +152,7 @@ const ChatDisplay = () => {
 
   useEffect(() => {
     if (user) {
-      fetch(`http://localhost:3000/messages/${id}`, {
+      fetch(`${SERVER_URL}/messages/${id}`, {
         headers: {
           Authorization: user?.token || "",
         },
@@ -184,7 +189,7 @@ const ChatDisplay = () => {
   const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const newMessage = await fetch("http://localhost:3000/messages", {
+    const newMessage = await fetch(`${SERVER_URL}/messages`, {
       method: "POST",
       body: JSON.stringify({
         content: message,

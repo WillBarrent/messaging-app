@@ -136,6 +136,8 @@ const supabase = createClient(
   import.meta.env.VITE_SUPABASE_SECRET_KEY,
 );
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 const Profile = () => {
   const { user, setLocalStorage } = useContext(UserContext) as UserContextType;
 
@@ -207,7 +209,7 @@ const Profile = () => {
       }
     }
 
-    const request = await fetch("http://localhost:3000/users/", {
+    const request = await fetch(`${SERVER_URL}/users/`, {
       method: "PUT",
       body: JSON.stringify({
         username: usernameToPass,

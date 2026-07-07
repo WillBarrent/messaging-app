@@ -2,7 +2,6 @@ import { Link, Outlet, useNavigate } from "react-router";
 import type { Chat, User, UserContextType } from "../types";
 import styled from "styled-components";
 import { TbLogout } from "react-icons/tb";
-import { format } from "date-fns";
 import type React from "react";
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
@@ -84,20 +83,8 @@ const UserInfo = styled.div`
   align-items: center;
 `;
 
-const LastMessage = styled.div`
-  font-size: 15px;
-  width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
 const Username = styled.div`
   font-weight: bold;
-`;
-
-const LastMessageTime = styled.div`
-  font-size: 12.5px;
 `;
 
 const Footer = styled.div`
@@ -165,6 +152,8 @@ const SearchSubmitButtonWrapper = styled.div`
   border-left: 0px;
 `;
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+
 const ChatList = () => {
   const { user, clearLocalStorage } = useContext(
     UserContext,
@@ -178,13 +167,10 @@ const ChatList = () => {
   const users: User[] = chats.map((chat) => {
     return chat.users[0];
   });
-  const lastMessages = chats.map((chat) => {
-    return chat.messages[0];
-  });
 
   useEffect(() => {
     if (user) {
-      fetch(`http://localhost:3000/chats/${user?.userId}`, {
+      fetch(`${SERVER_URL}/chats/${user?.userId}`, {
         headers: {
           Authorization: user?.token || "",
         },
@@ -207,7 +193,7 @@ const ChatList = () => {
   const onSearch = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const request = await fetch("http://localhost:3000/users", {
+    const request = await fetch(`${SERVER_URL}/users`, {
       headers: {
         Authorization: user?.token || "",
       },
@@ -243,7 +229,7 @@ const ChatList = () => {
   const onChat = async (chatterId: number) => {
     setSearchUsers([]);
 
-    const request = await fetch("http://localhost:3000/chats", {
+    const request = await fetch(`${SERVER_URL}/chats`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -316,11 +302,6 @@ const ChatList = () => {
 
             {searchUsers.length === 0 &&
               users.map((user, index) => {
-                const message = lastMessages[index]?.content;
-                const sentAt = lastMessages[index]
-                  ? format(new Date(lastMessages[index]?.createdAt || ""), "P")
-                  : "";
-
                 return (
                   <ChatLink key={user.id} to={`/chats/${chats[index].id}`}>
                     <Chat>
@@ -328,9 +309,7 @@ const ChatList = () => {
                       <ChatInfo>
                         <UserInfo>
                           <Username>{user.username}</Username>
-                          <LastMessageTime>{sentAt}</LastMessageTime>
                         </UserInfo>
-                        <LastMessage>{message}</LastMessage>
                       </ChatInfo>
                     </Chat>
                   </ChatLink>
